@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>LIMITS — Hero</title>
+    <meta name="description" content="A cinematic hero for LIMITS featuring an expanding pill video portal, fluid typography, and organic background vectors." />
+    <meta property="og:title" content="LIMITS — Hero" />
+    <meta property="og:description" content="A cinematic hero for LIMITS featuring an expanding pill video portal, fluid typography, and organic background vectors." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        --fs: min(18vh, 10.8vw);
+        --color-page: #ffffff;
+        --color-paper: #f2f2f1;
+        --color-ink: #1d1d1d;
+        --color-pill-placeholder: #d8d3cf;
+        --color-hairline: #b9b9b9;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: var(--color-page);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: var(--color-ink);
+        position: relative;
+        cursor: default;
+      }
+
+      /* Background paper layer with SVG flowing lines */
+      .bg-layer {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--color-paper);
+        z-index: 0;
+        opacity: 0; /* fades in between 45% and 78% */
+        pointer-events: none;
+      }
+
+      .bg-svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* Architectural watermark "GO" behind LIMITS */
+      .watermark-go {
+        position: absolute;
+        top: 43%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'Inter', sans-serif;
+        font-size: calc(2.7 * var(--fs));
+        font-weight: 900;
+        letter-spacing: -0.06em;
+        line-height: 0.8;
+        color: var(--color-ink);
+        opacity: 0; /* fades in 45% to 78% to 0.055 */
+        user-select: none;
+        pointer-events: none;
+        z-index: 1;
+        text-transform: uppercase;
+        white-space: nowrap;
+        will-change: transform, opacity;
+      }
+
+      /* Hero container */
+      .hero-container {
+        position: absolute;
+        top: 43%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(0.026 * var(--fs));
+        z-index: 5;
+        white-space: nowrap;
+        user-select: none;
+        will-change: transform, opacity;
+      }
+
+      .hero-word {
+        font-size: var(--fs);
+        font-weight: 800;
+        letter-spacing: -0.045em;
+        line-height: 0.8;
+        color: var(--color-ink);
+        display: inline-block;
+      }
+
+      /* Pill wrapper with centered button below */
+      .pill-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      /* Pill */
+      .pill {
+        position: relative;
+        height: calc(1.81 * var(--fs));
+        width: calc(0.012 * var(--fs)); /* hairline start */
+        border-radius: calc(1.81 * var(--fs));
+        overflow: hidden;
+        background-color: var(--color-pill-placeholder);
+        clip-path: inset(50% 0);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+      }
+
+      .pill:hover {
+        transform: scale(1.015);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      }
+
+      .pill:active {
+        transform: scale(0.985);
+      }
+
+      /* Grey hairline overlay that fades 14%-30% */
+      .pill-overlay {
+        position: absolute;
+        inset: 0;
+        background-color: var(--color-hairline);
+        z-index: 3;
+        pointer-events: none;
+        opacity: 1;
+      }
+
+      /* Video inside the pill */
+      .pill-video {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 100%;
+        min-width: calc(4.2 * var(--fs));
+        object-fit: cover;
+        object-position: center top;
+        z-index: 1;
+        display: block;
+      }
+
+      /* Icons inside the pill */
+      .pill-icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #ffffff;
+        opacity: 0; /* fades in after 80% to 0.85 */
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pill-icon svg {
+        width: calc(0.14 * var(--fs));
+        height: calc(0.14 * var(--fs));
+        min-width: 18px;
+        min-height: 18px;
+        stroke: #ffffff;
+      }
+
+      .pill-icon-left {
+        left: calc(0.18 * var(--fs));
+        pointer-events: none;
+      }
+
+      .pill-icon-right {
+        right: calc(0.18 * var(--fs));
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        outline: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      .pill-icon-right:hover {
+        transform: translateY(-50%) scale(1.15);
+      }
+
+      .pill-icon-right:active {
+        transform: translateY(-50%) scale(0.9);
+      }
+
+      .speaker-wave {
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        transform-origin: center;
+      }
+
+      .speaker-slash {
+        transition: opacity 0.2s ease;
+        opacity: 0;
+      }
+
+      /* Small button just below the video */
+      .btn-beyond {
+        position: absolute;
+        top: calc(100% + calc(0.13 * var(--fs)));
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--color-ink);
+        color: #ffffff;
+        border: none;
+        border-radius: 9999px;
+        padding: calc(0.045 * var(--fs)) calc(0.14 * var(--fs));
+        font-family: inherit;
+        font-size: max(11px, calc(0.068 * var(--fs)));
+        font-weight: 500;
+        letter-spacing: 0.025em;
+        cursor: pointer;
+        white-space: nowrap;
+        outline: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+        opacity: 0; /* fades in with icons */
+        z-index: 6;
+        user-select: none;
+        transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .btn-beyond:hover {
+        background-color: #000000;
+        transform: translateX(-50%) translateY(-2px) scale(1.04);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+      }
+
+      .btn-beyond:active {
+        transform: translateX(-50%) scale(0.96);
+      }
+
+      .btn-beyond svg {
+        transition: transform 0.2s ease;
+      }
+
+      .btn-beyond:hover svg {
+        transform: translateX(3px);
+      }
+
+      /* Floating Return Button (appears when vanished) */
+      .btn-return {
+        position: fixed;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%) translateY(24px);
+        background: var(--color-ink);
+        color: #ffffff;
+        border: none;
+        border-radius: 9999px;
+        padding: 9px 20px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.025em;
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 20;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+        transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s ease;
+      }
+
+      .btn-return.visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .btn-return:hover {
+        background: #000000;
+        transform: translateX(-50%) translateY(-2px) scale(1.04);
+      }
+
+      .btn-return:active {
+        transform: translateX(-50%) scale(0.96);
+      }
+
+      /* Phone (≤ 720 px) */
+      @media (max-width: 720px) {
+        :root {
+          --fs: min(28vw, 14vh);
+        }
+
+        .watermark-go {
+          top: 47%;
+          font-size: calc(2.4 * var(--fs));
+        }
+
+        .hero-container {
+          top: 47%;
+          flex-direction: column;
+          align-items: center;
+          width: calc(100vw - 40px);
+          gap: calc(0.03 * var(--fs));
+        }
+
+        .pill-wrapper {
+          width: calc(100vw - 40px);
+          align-items: center;
+        }
+
+        .pill {
+          width: calc(100vw - 40px);
+          height: 1.5px; /* initial hairline height */
+          clip-path: inset(0 50%); /* draws horizontally from center outwards */
+          border-radius: calc((100vw - 40px) / 1.85);
+        }
+
+        .pill-video {
+          width: calc(100vw - 40px);
+          min-width: calc(100vw - 40px);
+          height: calc((100vw - 40px) / 1.85);
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        .btn-beyond {
+          position: static;
+          transform: none;
+          margin-top: 14px;
+          margin-bottom: 2px;
+          padding: 7px 18px;
+          font-size: 12px;
+        }
+
+        .btn-beyond:hover {
+          transform: translateY(-1px) scale(1.02);
+        }
+
+        .btn-beyond:active {
+          transform: scale(0.96);
+        }
+
+        .btn-return {
+          bottom: 24px;
+          font-size: 11.5px;
+          padding: 8px 18px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .bg-layer, .pill-icon, .pill-overlay, .btn-beyond, .watermark-go, .btn-return {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Paper Layer with Sweeping S-curve Lines -->
+    <div class="bg-layer" id="bg-layer" aria-hidden="true">
+      <svg class="bg-svg" viewBox="0 0 1920 1080" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M -200,980 C 350,880 980,480 1780,120" stroke="#ffffff" stroke-width="2.1" stroke-opacity="0.68" stroke-linecap="round" />
+        <path d="M -100,1050 C 420,940 1080,420 1880,60" stroke="#ffffff" stroke-width="3.4" stroke-opacity="0.75" stroke-linecap="round" />
+        <path d="M -250,890 C 280,800 880,410 1680,80" stroke="#ffffff" stroke-width="1.6" stroke-opacity="0.62" stroke-linecap="round" />
+        <path d="M 50,1120 C 560,980 1200,380 1980,-20" stroke="#ffffff" stroke-width="2.8" stroke-opacity="0.78" stroke-linecap="round" />
+        <path d="M -300,780 C 220,700 780,350 1560,40" stroke="#ffffff" stroke-width="1.4" stroke-opacity="0.56" stroke-linecap="round" />
+        <path d="M 200,1180 C 700,1020 1340,320 2080,-80" stroke="#ffffff" stroke-width="3.8" stroke-opacity="0.82" stroke-linecap="round" />
+        <path d="M -150,820 C 320,720 920,330 1720,20" stroke="#ffffff" stroke-width="2.3" stroke-opacity="0.65" stroke-linecap="round" />
+        <path d="M 350,1240 C 840,1060 1480,260 2180,-140" stroke="#ffffff" stroke-width="1.8" stroke-opacity="0.59" stroke-linecap="round" />
+        <path d="M -80,720 C 380,620 990,260 1800,-40" stroke="#ffffff" stroke-width="3.1" stroke-opacity="0.72" stroke-linecap="round" />
+        <path d="M 500,1290 C 980,1100 1620,200 2280,-200" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.58" stroke-linecap="round" />
+        <path d="M -350,680 C 180,590 750,230 1520,-60" stroke="#ffffff" stroke-width="2.6" stroke-opacity="0.70" stroke-linecap="round" />
+        <path d="M 650,1340 C 1120,1140 1760,140 2380,-260" stroke="#ffffff" stroke-width="3.6" stroke-opacity="0.84" stroke-linecap="round" />
+        <path d="M -40,600 C 440,510 1060,160 1860,-120" stroke="#ffffff" stroke-width="1.3" stroke-opacity="0.55" stroke-linecap="round" />
+        <path d="M 800,1390 C 1260,1180 1900,80 2480,-320" stroke="#ffffff" stroke-width="2.4" stroke-opacity="0.66" stroke-linecap="round" />
+        <path d="M 100,520 C 580,430 1200,90 1960,-180" stroke="#ffffff" stroke-width="2.9" stroke-opacity="0.74" stroke-linecap="round" />
+      </svg>
+    </div>
+
+    <!-- Architectural Watermark "GO" behind LIMITS -->
+    <div class="watermark-go" id="watermark-go" aria-hidden="true">GO</div>
+
+    <!-- Main Hero: LIMITS -->
+    <main>
+      <div class="hero-container" id="hero-container">
+        <span class="hero-word" id="word-lim">LIM</span>
+
+        <div class="pill-wrapper" id="pill-wrapper">
+          <div
+            class="pill"
+            id="pill"
+            role="button"
+            tabindex="0"
+            aria-label="Replay reveal animation"
+            title="Click to replay animation"
+          >
+            <!-- Grey hairline overlay -->
+            <div class="pill-overlay" id="pill-overlay"></div>
+
+            <!-- Video Scene -->
+            <video
+              class="pill-video"
+              id="pill-video"
+              src="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/175fbbcd-e50a-480c-bab2-ca16d4678322.mp4"
+              poster="https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/726b168c-da47-4682-a255-cc3e02f89bae.jpg"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="auto"
+              aria-label="Floating island with waterfall over clouds"
+            ></video>
+
+            <!-- Breeze line icon (left) -->
+            <div class="pill-icon pill-icon-left" id="icon-left" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"></path>
+                <path d="M9.6 4.6A2 2 0 1 1 11 8H2"></path>
+                <path d="M12.6 19.4A2 2 0 1 0 14 16H2"></path>
+              </svg>
+            </div>
+
+            <!-- Speaker icon (right) toggles its sound waves -->
+            <button
+              class="pill-icon pill-icon-right"
+              id="speaker-btn"
+              type="button"
+              aria-label="Toggle sound waves"
+              title="Toggle sound waves"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path class="speaker-wave wave-1" d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path class="speaker-wave wave-2" d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                <line class="speaker-slash" id="speaker-slash" x1="22" y1="9" x2="16" y2="15"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Small button just below video: Beyond Limits -->
+          <button class="btn-beyond" id="btn-beyond" type="button" aria-label="Beyond Limits">
+            <span>Beyond Limits</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+
+        <span class="hero-word" id="word-its">ITS</span>
+      </div>
+    </main>
+
+    <!-- Floating Return Button (appears when Limits has vanished) -->
+    <button class="btn-return" id="btn-return" type="button" aria-label="Return to Limits">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+        <path d="M3 3v5h5"></path>
+      </svg>
+      <span>Return to Limits</span>
+    </button>
+
+    <script>
+      (function () {
+        'use strict';
+
+        const DURATION = 2100; // 2.1 s
+        const VIDEO_DURATION = 4.25;
+
+        // Elements
+        const heroContainer = document.getElementById('hero-container');
+        const pill = document.getElementById('pill');
+        const pillOverlay = document.getElementById('pill-overlay');
+        const pillVideo = document.getElementById('pill-video');
+        const iconLeft = document.getElementById('icon-left');
+        const speakerBtn = document.getElementById('speaker-btn');
+        const bgLayer = document.getElementById('bg-layer');
+        const watermarkGo = document.getElementById('watermark-go');
+        const btnBeyond = document.getElementById('btn-beyond');
+        const btnReturn = document.getElementById('btn-return');
+        const speakerWaves = document.querySelectorAll('.speaker-wave');
+        const speakerSlash = document.getElementById('speaker-slash');
+
+        let animations = [];
+        let primaryAnim = null;
+        let isBeyondAnimating = false;
+        let isVanished = false;
+        let isWavesActive = true;
+        let autoResetTimer = null;
+
+        // Ensure video is playing
+        if (pillVideo) {
+          pillVideo.play().catch(() => {});
+          pillVideo.addEventListener('ended', () => {
+            pillVideo.currentTime = 0;
+            pillVideo.play().catch(() => {});
+          });
+        }
+
+        // Speaker icon wave toggle
+        speakerBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          isWavesActive = !isWavesActive;
+          speakerWaves.forEach((w) => {
+            w.style.opacity = isWavesActive ? '1' : '0';
+          });
+          if (speakerSlash) {
+            speakerSlash.style.opacity = isWavesActive ? '0' : '1';
+          }
+          speakerBtn.setAttribute('title', isWavesActive ? 'Sound waves active' : 'Sound waves muted');
+        });
+
+        // Compute current type unit (fs)
+        function getFs() {
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+          if (vw <= 720) {
+            return Math.min(vw * 0.28, vh * 0.14);
+          }
+          return Math.min(vh * 0.18, vw * 0.108);
+        }
+
+        function isPhone() {
+          return window.innerWidth <= 720;
+        }
+
+        // Build the Web Animations timeline
+        function buildAnimations() {
+          animations.forEach((a) => {
+            try {
+              a.cancel();
+            } catch (err) {}
+          });
+          animations = [];
+
+          const fs = getFs();
+          const phone = isPhone();
+
+          if (phone) {
+            // PHONE MODE (≤ 720 px)
+            const pillWidth = window.innerWidth - 40;
+            const finalHeight = pillWidth / 1.85;
+
+            // Pill opens vertically
+            const pillAnim = pill.animate(
+              [
+                {
+                  height: '1.5px',
+                  clipPath: 'inset(0 50%)',
+                  offset: 0,
+                },
+                {
+                  height: '1.5px',
+                  clipPath: 'inset(0 0%)',
+                  easing: 'cubic-bezier(0.5, 0, 0.3, 1)',
+                  offset: 0.14,
+                },
+                {
+                  height: `${finalHeight * 0.1}px`,
+                  clipPath: 'inset(0 0%)',
+                  easing: 'cubic-bezier(0.45, 0, 0.3, 1)',
+                  offset: 0.3,
+                },
+                {
+                  height: `${finalHeight * 0.55}px`,
+                  clipPath: 'inset(0 0%)',
+                  easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                  offset: 0.58,
+                },
+                {
+                  height: `${finalHeight}px`,
+                  clipPath: 'inset(0 0%)',
+                  offset: 1.0,
+                },
+              ],
+              { duration: DURATION, fill: 'both' }
+            );
+            animations.push(pillAnim);
+            primaryAnim = pillAnim;
+
+            // Word gap on mobile: 0.03em -> 0.1em
+            const gapAnim = heroContainer.animate(
+              [
+                { gap: `${0.03 * fs}px`, offset: 0 },
+                { gap: `${0.03 * fs}px`, offset: 0.14 },
+                { gap: `${0.1 * fs}px`, offset: 1.0 },
+              ],
+              { duration: DURATION, fill: 'both' }
+            );
+            animations.push(gapAnim);
+          } else {
+            // DESKTOP MODE (> 720 px)
+            const w0 = 0.012 * fs; // hairline
+            const w1 = 0.16 * fs; // slit
+            const w2 = 1.81 * fs; // circle
+            const w3 = 3.62 * fs; // final stadium
+
+            // Pill width & clip
+            const pillAnim = pill.animate(
+              [
+                {
+                  width: `${w0}px`,
+                  clipPath: 'inset(50% 0)',
+                  offset: 0,
+                },
+                {
+                  width: `${w0}px`,
+                  clipPath: 'inset(0% 0)',
+                  easing: 'cubic-bezier(0.5, 0, 0.3, 1)',
+                  offset: 0.14,
+                },
+                {
+                  width: `${w1}px`,
+                  clipPath: 'inset(0% 0)',
+                  easing: 'cubic-bezier(0.45, 0, 0.3, 1)',
+                  offset: 0.3,
+                },
+                {
+                  width: `${w2}px`,
+                  clipPath: 'inset(0% 0)',
+                  easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                  offset: 0.58,
+                },
+                {
+                  width: `${w3}px`,
+                  clipPath: 'inset(0% 0)',
+                  offset: 1.0,
+                },
+              ],
+              { duration: DURATION, fill: 'both' }
+            );
+            animations.push(pillAnim);
+            primaryAnim = pillAnim;
+
+            // Word gap: 0.026 em until 14%, 0.05 em at 58%, then 0.085 em
+            const gapAnim = heroContainer.animate(
+              [
+                { gap: `${0.026 * fs}px`, offset: 0 },
+                { gap: `${0.026 * fs}px`, offset: 0.14 },
+                { gap: `${0.05 * fs}px`, offset: 0.58 },
+                { gap: `${0.085 * fs}px`, offset: 1.0 },
+              ],
+              { duration: DURATION, fill: 'both' }
+            );
+            animations.push(gapAnim);
+          }
+
+          // Hairline grey overlay: fades out between 14% and 30%
+          const overlayAnim = pillOverlay.animate(
+            [
+              { opacity: 1, offset: 0 },
+              { opacity: 1, offset: 0.14 },
+              { opacity: 0, offset: 0.3 },
+              { opacity: 0, offset: 1.0 },
+            ],
+            { duration: DURATION, fill: 'both' }
+          );
+          animations.push(overlayAnim);
+
+          // Background paper and lines: fade in between 45% and 78%
+          const bgAnim = bgLayer.animate(
+            [
+              { opacity: 0, offset: 0 },
+              { opacity: 0, offset: 0.45 },
+              { opacity: 1, offset: 0.78 },
+              { opacity: 1, offset: 1.0 },
+            ],
+            { duration: DURATION, fill: 'both' }
+          );
+          animations.push(bgAnim);
+
+          // Watermark "GO" behind LIMITS: fades in between 45% and 78% to 0.055
+          if (watermarkGo) {
+            const goAnim = watermarkGo.animate(
+              [
+                { opacity: 0, offset: 0 },
+                { opacity: 0, offset: 0.45 },
+                { opacity: 0.055, offset: 0.78 },
+                { opacity: 0.055, offset: 1.0 },
+              ],
+              { duration: DURATION, fill: 'both' }
+            );
+            animations.push(goAnim);
+          }
+
+          // Pill Icons: fade in after 80% to 0.85
+          const icons = [iconLeft, speakerBtn];
+          icons.forEach((ic) => {
+            const iconAnim = ic.animate(
+              [
+                { opacity: 0, offset: 0 },
+                { opacity: 0, offset: 0.8 },
+                { opacity: 0.85, offset: 1.0 },
+              ],
+              { duration: DURATION, fill: 'both' }
+            );
+            animations.push(iconAnim);
+          });
+
+          // Small button just below video ("Beyond Limits"): fades in after 80% to 1
+          if (btnBeyond) {
+            const btnAnim = btnBeyond.animate(
+              [
+                { opacity: 0, offset: 0 },
+                { opacity: 0, offset: 0.8 },
+                { opacity: 1, offset: 1.0 },
+              ],
+              { duration: DURATION, fill: 'both' }
+            );
+            animations.push(btnAnim);
+          }
+        }
+
+        // Beyond Limits Execution:
+        // Step 1: Closes everything (pill collapses back to hairline, button/icons fade)
+        // Step 2: The limits ascend to the top of the page and vanish
+        function triggerBeyondLimitsSequence() {
+          if (isBeyondAnimating || !primaryAnim) return;
+          isBeyondAnimating = true;
+
+          clearTimeout(autoResetTimer);
+          btnReturn.classList.remove('visible');
+
+          // Immediately fade out Beyond Limits button
+          btnBeyond.style.pointerEvents = 'none';
+          btnBeyond.animate(
+            [
+              { opacity: 1, transform: 'translateX(-50%) scale(1)' },
+              { opacity: 0, transform: 'translateX(-50%) scale(0.85)' }
+            ],
+            { duration: 240, fill: 'forwards', easing: 'ease-out' }
+          );
+
+          // Step 1: Closes everything
+          animations.forEach((a) => {
+            a.playbackRate = -1.25;
+            a.play();
+          });
+
+          const onCollapseEnd = () => {
+            primaryAnim.removeEventListener('finish', onCollapseEnd);
+
+            // Step 2: Limits go up to the top of the page and vanish from there
+            const launchAnim = heroContainer.animate(
+              [
+                { transform: 'translate(-50%, -50%)', opacity: 1 },
+                { transform: 'translate(-50%, calc(-50% - 140vh))', opacity: 0 }
+              ],
+              {
+                duration: 900,
+                easing: 'cubic-bezier(0.4, 0, 0.15, 1)',
+                fill: 'forwards'
+              }
+            );
+
+            if (watermarkGo) {
+              watermarkGo.animate(
+                [
+                  { transform: 'translate(-50%, -50%)', opacity: 0.055 },
+                  { transform: 'translate(-50%, calc(-50% - 140vh))', opacity: 0 }
+                ],
+                {
+                  duration: 900,
+                  easing: 'cubic-bezier(0.4, 0, 0.15, 1)',
+                  fill: 'forwards'
+                }
+              );
+            }
+
+            launchAnim.onfinish = () => {
+              isVanished = true;
+              btnReturn.classList.add('visible');
+
+              // Automatically reset and reopen after a graceful 2.5s pause
+              autoResetTimer = setTimeout(() => {
+                resetAndReopen();
+              }, 2500);
+            };
+          };
+
+          primaryAnim.addEventListener('finish', onCollapseEnd);
+        }
+
+        // Reset and Re-open to reveal again
+        function resetAndReopen() {
+          if (!isVanished) return;
+          clearTimeout(autoResetTimer);
+          btnReturn.classList.remove('visible');
+
+          // Reset container transform and opacity
+          heroContainer.style.transform = 'translate(-50%, -50%)';
+          heroContainer.style.opacity = '1';
+          if (watermarkGo) {
+            watermarkGo.style.transform = 'translate(-50%, -50%)';
+            watermarkGo.style.opacity = '0';
+          }
+          btnBeyond.style.pointerEvents = 'auto';
+
+          // Rebuild & play forward
+          animations.forEach((a) => {
+            a.playbackRate = 1;
+            a.currentTime = 0;
+            a.play();
+          });
+
+          const onReopenFinish = () => {
+            primaryAnim.removeEventListener('finish', onReopenFinish);
+            isVanished = false;
+            isBeyondAnimating = false;
+          };
+
+          primaryAnim.addEventListener('finish', onReopenFinish);
+        }
+
+        // Standard pill replay
+        function triggerSimpleReplay() {
+          if (isBeyondAnimating || !primaryAnim) return;
+          triggerBeyondLimitsSequence();
+        }
+
+        // Click listeners
+        btnBeyond.addEventListener('click', (e) => {
+          e.stopPropagation();
+          triggerBeyondLimitsSequence();
+        });
+
+        pill.addEventListener('click', (e) => {
+          if (e.target.closest('#speaker-btn')) return;
+          triggerBeyondLimitsSequence();
+        });
+
+        btnReturn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          resetAndReopen();
+        });
+
+        // Click anywhere when vanished to bring back immediately
+        window.addEventListener('click', (e) => {
+          if (isVanished && !e.target.closest('#speaker-btn')) {
+            resetAndReopen();
+          }
+        });
+
+        pill.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerBeyondLimitsSequence();
+          }
+        });
+
+        // Spacebar to trigger sequence or return
+        window.addEventListener('keydown', (e) => {
+          if (e.code === 'Space' && (e.target === document.body || e.target === pill)) {
+            e.preventDefault();
+            if (isVanished) {
+              resetAndReopen();
+            } else {
+              triggerBeyondLimitsSequence();
+            }
+          }
+        });
+
+        // Recording mode (?rec=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const isRecMode = urlParams.get('rec') === '1';
+
+        window.__recVideo = function (t) {
+          const seekTime = ((t % VIDEO_DURATION) + VIDEO_DURATION) % VIDEO_DURATION + 1 / 120;
+          const normalized = seekTime % VIDEO_DURATION;
+          if (pillVideo) {
+            pillVideo.currentTime = normalized;
+          }
+          return normalized;
+        };
+
+        // Reduced motion check
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function startExperience() {
+          if (prefersReducedMotion) {
+            buildAnimations();
+            animations.forEach((a) => a.finish());
+            if (pillVideo) {
+              pillVideo.pause();
+              pillVideo.currentTime = 0;
+            }
+            return;
+          }
+
+          buildAnimations();
+
+          if (isRecMode) {
+            setTimeout(() => {
+              triggerBeyondLimitsSequence();
+            }, 4900);
+          }
+        }
+
+        // Window resize
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            animations.forEach((a) => {
+              try {
+                a.finish();
+              } catch (e) {}
+            });
+            buildAnimations();
+            animations.forEach((a) => a.finish());
+          }, 100);
+        });
+
+        // Start when fonts ready
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            startExperience();
+          });
+        } else {
+          window.addEventListener('DOMContentLoaded', startExperience);
+        }
+      })();
+    </script>
+  </body>
+</html>

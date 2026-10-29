@@ -1,0 +1,6 @@
+{
+  "name": "LIMITS — Hero",
+  "description": "A cinematic hero for LIMITS featuring an expanding pill video portal, fluid typography, and organic background vectors.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
